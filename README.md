@@ -16,27 +16,4 @@
   > pytest -m login
 - command to run only transfer tests:
   > pytest -m transfer
-
-- SAMPLE TEST RUN for login tests
-  >  pytest -m login
-- terminal Output
-============================================ test session starts ============================================
-platform darwin -- Python 3.10.8, pytest-7.2.0, pluggy-1.0.0
-rootdir: /Users/shubhampandey/Documents/study/aspire_financial/demo-ebanq-TAF, configfile: pytest.ini
-collected 7 items / 5 deselected / 2 selected                                                               
-
-test/test_login.py ..                                                                                 [100%]
-
-===================================== 2 passed, 5 deselected in 27.93s ======================================
-
-- SAMPLE TEST RUN for transfer tests
-  > pytest -m transfer
-- terminal Output
-============================================ test session starts ============================================
-platform darwin -- Python 3.10.8, pytest-7.2.0, pluggy-1.0.0
-rootdir: /Users/shubhampandey/Documents/study/aspire_financial/demo-ebanq-TAF, configfile: pytest.ini
-collected 7 items / 2 deselected / 5 selected                                                               
-
-test/test_transfer.py .....                                                                           [100%]
-
-================================ 5 passed, 2 deselected in 121.26s (0:02:01) ================================
+<img width="1417" alt="Screenshot 2022-12-04 at 7 53 35 PM" src="https://user-images.githubusercontent.com/14867984/205496294-e2e77bcd-15af-460e-827f-60e23b232f07.png">
