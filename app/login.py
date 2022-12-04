@@ -1,40 +1,44 @@
 import pytest
 from selenium import webdriver
 from app.login_locators import Login_Locators
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from common.utility import wait_for_element_load, wait
 
 
 class Login(object):
     def __init__(self):
+        self.timeout = 10
         self.bank_url = (pytest.config['BANK_URL']).replace("\n", "")
         self.driver = webdriver.Firefox()
-        # WebDriverWait(self.driver, 10).until(EC.)
         self.driver.get(self.bank_url)
+        assert wait_for_element_load(
+            self.driver, self.timeout, Login_Locators.SIGN_IN_BUTTON_LOCATOR)
 
     def enter_username(self, user):
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
-            (By.XPATH, Login_Locators.USER_TEXT_LOCATOR)))
-        email = self.driver.find_element(
-            By.XPATH, Login_Locators.USER_TEXT_LOCATOR)
-        email.send_keys(user)
+        if wait_for_element_load(self.driver, self.timeout, Login_Locators.USER_TEXT_LOCATOR):
+            email = self.driver.find_element(*Login_Locators.USER_TEXT_LOCATOR)
+            email.send_keys(user)
+        else:
+            raise Exception("Element: {} not found".format(
+                Login_Locators.USER_TEXT_LOCATOR))
 
     def enter_password(self, password):
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
-            (By.XPATH, Login_Locators.PASSWORD_TEXT_LOCATOR)))
-        password_text = self.driver.find_element(
-            By.XPATH, Login_Locators.PASSWORD_TEXT_LOCATOR)
-        password_text.send_keys(password)
+        if wait_for_element_load(self.driver, self.timeout, Login_Locators.PASSWORD_TEXT_LOCATOR):
+            password_text = self.driver.find_element(
+                *Login_Locators.PASSWORD_TEXT_LOCATOR)
+            password_text.send_keys(password)
+        else:
+            raise Exception("Element: {} not found".format(
+                Login_Locators.PASSWORD_TEXT_LOCATOR))
 
     def click_sign_in_button(self):
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
-            (By.XPATH, Login_Locators.SIGN_IN_BUTTON_LOCATOR)))
-        sign_in_button = self.driver.find_element(
-            By.XPATH, Login_Locators.PASSWORD_TEXT_LOCATOR)
-        sign_in_button.click()
+        if wait_for_element_load(self.driver, self.timeout, Login_Locators.SIGN_IN_BUTTON_LOCATOR):
+            sign_in_button = self.driver.find_element(
+                *Login_Locators.SIGN_IN_BUTTON_LOCATOR)
+            sign_in_button.click()
+        else:
+            raise Exception("Element: {} not found".format(
+                Login_Locators.SIGN_IN_BUTTON_LOCATOR))
 
     def login(self, user, password):
         self.enter_username(user)
@@ -42,9 +46,14 @@ class Login(object):
         self.click_sign_in_button()
 
     def verify_login_successful(self):
-        return "Hello" in self.driver.page_source
+        if wait_for_element_load(self.driver, self.timeout, Login_Locators.SUCCESS_ALERT):
+            return "Hello" in self.driver.page_source
+        else:
+            raise Exception("Element: {} not found".format(
+                Login_Locators.SUCCESS_ALERT))
 
     def verify_graceful_error(self):
+        wait(2)
         return "Wrong username or password." in self.driver.page_source
 
     def close_driver(self):
